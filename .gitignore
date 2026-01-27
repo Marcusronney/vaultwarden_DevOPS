@@ -1,1 +1,12 @@
 .terraform/
+ansible/access
+ansible/access
+terraform/.terraform/
+terraform/
+argocd
+app-vaultwarden
+application-working
+argocd
+traefik
+trivy-ok
+trivy
