@@ -113,17 +113,6 @@ Funcionalidades:
 - Middleware de autenticação básica no Traefik (opcional).
 - Limites de recursos configurados para o container.
 
----
-
-## Requisitos para Funcionamento
-
-Antes de aplicar os manifests, o cluster deve ter:
-
-- Kubernetes funcionando (ex.: EKS)
-- Traefik instalado como Ingress Controller
-- cert-manager instalado
-- StorageClass padrão configurada
-- Domínio público apontando para o Load Balancer do Traefik
 
 ---
 
