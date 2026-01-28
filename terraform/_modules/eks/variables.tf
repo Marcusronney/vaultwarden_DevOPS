@@ -8,6 +8,7 @@ variable "eks_cluster_name" { # Nome do Cluster
 
 variable "cluster_version" { # Versão do Kubernetes
   type = string
+  default = "1.29"
 }
 
 variable "node_group_name" { # Nome do Worker Nodes
