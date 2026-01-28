@@ -10,8 +10,6 @@ jobs:
   terraform:
     runs-on: ubuntu-latest
 
-    # IMPORTANTe: seus secrets são "Environment secrets"
-    # No seu print, o nome do Environment é "TF_USER_AWS_KEY"
     environment: TF_USER_AWS_KEY
 
     defaults:
