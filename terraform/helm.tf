@@ -23,12 +23,6 @@ module "CERTMANAGER" {
   ]
 }
 
-# module "NGINX_INGRESS_CONTROLLER" {
-#   source             = "./_modules/helm-release/nginx-ingress-controller"
-#   security_group     = module.SG_INGRESS_CONTROLLER.security_group_id
-#   ingress_class_name = "nginx"
-#   public_subnets_ids = module.SUBNETS.public_subnets
-# }
 
 module "ARGOCD" {
   source = "./_modules/helm-release"
@@ -49,30 +43,8 @@ module "ARGOCD" {
 
   values = [file("./_modules/helm-release/argocd-values.yaml")]
 
-  # helm install argocd -n argocd -f values/argocd.yaml
-  # k port-forward svc/argocd-server -n argocd 8080:80
-  # k get secrets argocd-initial-admin-secret -o yaml -n argocd
 }
 
-# module "CONSUL" {
-#   source = "./_modules/helm-release"
-#   namespace = "consul"
-#   repository = "https://marketplace.azurecr.io/helm/v1/repo"
-
-#   app = {
-#     chart         = "azure-marketplace//consul"
-#     force_update  = true
-#     name          = "consul"
-#     recreate_pods = true
-#     reuse_values  = true
-#   }
-
-#   values = [<<EOF
-# ImageTag: "1.4.0"
-# EOF
-#   ]
-
-# }
 
 module "TRAEFIK" {
   source = "./_modules/helm-release"

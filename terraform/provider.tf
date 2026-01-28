@@ -1,14 +1,3 @@
-#provider "aws" {
-
-#profile = "default"
-#region  = "us-east-1"
-#default_tags {
-#tags = {
-#  owner      = "Marcus Ronney"
-#   managed-by = "terraform"
-#  }
-# }
-#}
 
 provider "aws" {
   region = var.region # ou "us-east-1" se você preferir fixo
@@ -44,17 +33,6 @@ provider "kubernetes" {
   }
 }
 
-#  provider "helm" {
-#   kubernetes {
-#     config_path = "~/.kube/config"
-#   }
-# }
-
-#  provider "kubernetes" {
-#   kubernetes {
-#     config_path = "~/.kube/config"
-#   }
-# }
 
 terraform {
   required_providers {
