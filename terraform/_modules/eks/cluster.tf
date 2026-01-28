@@ -1,9 +1,12 @@
 # Cria o Cluster EKS e adiciona Add-ons do Kubernetes/EKS (CNI, kube-proxy, CoreDNS e EBS CSI)
 
+#nome do cluster
+# Assossia o clusta a IAM ROLE criada em cluster_role.tf
+# define aversão do K8S
 resource "aws_eks_cluster" "this" {
-  name     = var.eks_cluster_name #nome do cluster
-  role_arn = aws_iam_role.eks_cluster.arn # Assossia o clusta a IAM ROLE criada em cluster_role.tf
-  version  = var.cluster_version # define aversão do K8S
+  name     = var.eks_cluster_name 
+  role_arn = aws_iam_role.eks_cluster.arn 
+  version  = var.cluster_version 
 
   vpc_config { # Configura a rede e acesso ao endpoint da API do cluster.
     security_group_ids      = [aws_security_group.eks_cluster.id, aws_security_group.eks_nodes.id] # Define 2 SGs no Cluster e do Node

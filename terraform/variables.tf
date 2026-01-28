@@ -22,7 +22,7 @@ variable "eks_cluster_name" {
 }
 
 variable "cluster_version" {
-  default = "1.28"
+  default = "1.29"
   type    = string
 }
 
