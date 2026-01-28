@@ -4,7 +4,7 @@ Este diretório contém os **manifests Kubernetes** responsáveis por implantar 
 
 ---
 
-## Visão Geral da Arquitetura
+## Arquitetura
 
 O Vaultwarden é executado como um **container** dentro de um **Pod**, gerenciado por um `Deployment`.  
 Os binários do Vaultwarden **não são instalados manualmente nos nós** — eles já vêm empacotados na imagem Docker `vaultwarden/server`, que é baixada automaticamente pelo Kubernetes a partir de um registry público quando o Pod é criado.
