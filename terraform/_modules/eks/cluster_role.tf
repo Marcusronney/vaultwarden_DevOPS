@@ -4,7 +4,8 @@ resource "aws_iam_role" "eks_cluster" { #Cria uma IAM Role via variável <nome-d
   name = "${var.eks_cluster_name}-cluster"
   
 # autoriza o serviço EKS a assumir essa role. Sem isso, o EKS não consegue usar a role e o cluster não sobe.
-  assume_role_policy = <<POLICY # Define quem pode assumir a Role
+ # Define quem pode assumir a Role 
+  assume_role_policy = <<POLICY
 {
   "Version": "2012-10-17",
   "Statement": [
