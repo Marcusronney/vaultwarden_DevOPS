@@ -33,7 +33,10 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: Terraform fmt (check)
+      - name: Terraform fmt
+        run: terraform fmt -recursive
+
+      - name: Terraform fmt check
         run: terraform fmt -check -recursive
 
       - name: Terraform init
