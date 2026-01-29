@@ -55,7 +55,7 @@ module "TRAEFIK_CRDS" {
     create_namespace = true
     name             = "traefik-crds"
     chart            = "traefik-crds"
-    version          = "21.1.0"
+    version          = "1.31.1"
     wait             = true
     force_update     = true
     recreate_pods    = false
