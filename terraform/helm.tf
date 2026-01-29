@@ -45,6 +45,27 @@ module "ARGOCD" {
 
 }
 
+module "TRAEFIK_CRDS" {
+  source = "./_modules/helm-release"
+
+  namespace  = "traefik"
+  repository = "https://traefik.github.io/charts"
+
+  app = {
+    create_namespace = true
+    name             = "traefik-crds"
+    chart            = "traefik-crds"
+    version          = "21.1.0"
+    wait             = true
+    force_update     = true
+    recreate_pods    = false
+    lint             = false
+    timeout          = var.timeout_seconds
+  }
+
+  values = []
+}
+
 
 module "TRAEFIK" {
   source = "./_modules/helm-release"
@@ -65,5 +86,7 @@ module "TRAEFIK" {
   }
 
   values = [file("./_modules/helm-release/traefik-values.yaml")]
+
+  depends_on = [module.TRAEFIK_CRDS]
 
 }

@@ -12,6 +12,8 @@ resource "helm_release" "this" {
   values           = var.values
   create_namespace = true
 
+  skip_crds = try(var.app.skip_crds, false)
+
 
   dynamic "set" {
     for_each = var.set
