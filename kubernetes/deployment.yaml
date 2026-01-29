@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: vaultwarden
-          image: vaultwarden/server:latest # imagem da aplicação
+          image: 762012032320.dkr.ecr.us-east-1.amazonaws.com/vaultwarden:latest # imagem da aplicação direto do ECR
           resources:
             limits: # limites de uso de cpu e memória
               memory: "256Mi"
