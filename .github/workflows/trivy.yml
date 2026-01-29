@@ -26,6 +26,9 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
 
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
       - name: Set repository URI
         run: |
           echo "AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> $GITHUB_ENV

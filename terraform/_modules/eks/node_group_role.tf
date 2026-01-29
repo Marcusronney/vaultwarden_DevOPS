@@ -9,7 +9,7 @@ resource "aws_iam_role" "eks_nodes" {
 data "aws_iam_policy_document" "assume_workers" {
   statement {
     effect = "Allow"
-
+// declarando que somente instancias EC2 podem assumir essa role
     actions = ["sts:AssumeRole"]
 
     principals {
