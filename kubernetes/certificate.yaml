@@ -8,6 +8,6 @@ spec:
   issuerRef:
     name: letsencrypt 
     kind: ClusterIssuer
-  commonName: example@example.com
+  commonName: marcusronney@outlook.com
   dnsNames:
-    - example@example.com
+    - marcusronney@outlook.com

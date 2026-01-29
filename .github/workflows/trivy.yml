@@ -1,0 +1,57 @@
+name: Continuous Integration Pipeline
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_DEFAULT_REGION: us-east-1
+  IMAGE_REPO_NAME: vaultwarden
+  IMAGE_TAG: latest
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout from SCM
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+      - name: Set repository URI
+        run: |
+          echo "AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> $GITHUB_ENV
+          echo "REPOSITORY_URI=$(aws sts get-caller-identity --query Account --output text).dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}" >> $GITHUB_ENV
+
+      - name: Ensure ECR repository exists
+        run: |
+          aws ecr describe-repositories --repository-names "${IMAGE_REPO_NAME}" >/dev/null 2>&1 || \
+          aws ecr create-repository --repository-name "${IMAGE_REPO_NAME}" >/dev/null
+
+      - name: Login to AWS ECR
+        run: |
+          aws ecr get-login-password --region "${AWS_DEFAULT_REGION}" | \
+          docker login --username AWS --password-stdin "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+
+      - name: Pull Docker Image from Docker Hub
+        run: docker pull vaultwarden/server:latest
+
+      - name: Tag Docker Image
+        run: docker tag vaultwarden/server:latest "${REPOSITORY_URI}:${IMAGE_TAG}"
+
+      - name: Trivy Scan
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy image "${REPOSITORY_URI}:${IMAGE_TAG}" \
+            --no-progress --format table --exit-code 0
+
+      - name: Push Docker Image to ECR
+        run: docker push "${REPOSITORY_URI}:${IMAGE_TAG}"

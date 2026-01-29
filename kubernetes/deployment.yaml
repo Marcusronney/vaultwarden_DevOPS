@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vaultwarden-deployment
+  name: vaultwarden-deployment # nome
 spec:
-  replicas: 1
-  selector:
+  replicas: 1 # definindo 1 réplica
+  selector: # rótulos
     matchLabels:
       app: vaultwarden
   template:
@@ -14,14 +14,14 @@ spec:
     spec:
       containers:
         - name: vaultwarden
-          image: vaultwarden/server:latest
+          image: vaultwarden/server:latest # imagem da aplicação
           resources:
-            limits:
+            limits: # limites de uso de cpu e memória
               memory: "256Mi"
               cpu: "500m"
           ports:
             - containerPort: 80
-          volumeMounts:
+          volumeMounts: # Volume persistent
             - name: vaultwarde-data 
               mountPath: /app/vaultwarden-data 
       volumes:
