@@ -1,10 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vaultwarden-deployment # nome
+  name: vaultwarden-deployment
+  namespace: vaultwarden
 spec:
-  replicas: 1 # definindo 1 réplica
-  selector: # rótulos
+  replicas: 1
+  selector:
     matchLabels:
       app: vaultwarden
   template:
@@ -12,18 +13,20 @@ spec:
       labels:
         app: vaultwarden
     spec:
+      imagePullSecrets:
+        - name: regcred
       containers:
         - name: vaultwarden
-          image: 762012032320.dkr.ecr.us-east-1.amazonaws.com/vaultwarden:latest # imagem da aplicação direto do ECR
+          image: 762012032320.dkr.ecr.us-east-1.amazonaws.com/vaultwarden:latest
           resources:
-            limits: # limites de uso de cpu e memória
+            limits:
               memory: "256Mi"
               cpu: "500m"
           ports:
             - containerPort: 80
-          volumeMounts: # Volume persistent
-            - name: vaultwarde-data 
-              mountPath: /app/vaultwarden-data 
+          volumeMounts:
+            - name: data
+              mountPath: /app/vaultwarden-data
       volumes:
         - name: data
           persistentVolumeClaim:
