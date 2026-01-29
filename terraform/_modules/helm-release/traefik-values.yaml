@@ -158,6 +158,7 @@ ingressRoute:
     # -- Additional ingressRoute middlewares (e.g. for authentication)
     middlewares:
       - name: traefik-dashboard-auth
+        namespace: traefik
     # -- TLS options (e.g. secret containing certificate)
     tls: {}
   healthcheck:
@@ -945,6 +946,7 @@ extraObjects:
     kind: Secret
     metadata:
       name: traefik-dashboard-auth-secret
+      namespace: traefik
     type: kubernetes.io/basic-auth
     stringData:
       username: admin
@@ -954,9 +956,11 @@ extraObjects:
     kind: Middleware
     metadata:
       name: traefik-dashboard-auth
+      namespace: traefik
     spec:
       basicAuth:
         secret: traefik-dashboard-auth-secret
+
 
 # This will override the default Release Namespace for Helm.
 # It will not affect optional CRDs such as `ServiceMonitor` and `PrometheusRules`
