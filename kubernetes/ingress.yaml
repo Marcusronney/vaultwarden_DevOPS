@@ -13,7 +13,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`example.com`) && PathPrefix(`/`)
+    - match: Host(`vault.ronney.tech`) && PathPrefix(`/`)
       kind: Rule
       services:
         - name: vaultwarden-service
