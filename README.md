@@ -1,6 +1,9 @@
 # vaultwarden_DevOPS
 O repositório tem como objetivo provisionar e executar o Vaultwarden na AWS, utilizando Terraform para infraestrutura como código e Docker para empacotamento da aplicação. O Vaultwarden é uma implementação alternativa (não oficial) do Bitwarden, escrita em Rust, amplamente usada por ser mais leve e adequada a ambientes pequenos.
 
+![images/vaultwarden.png](images/AWSProjectvaultwarden.png)
+
+
 
 ## Principais Tecnologias Utilizadas
 
@@ -42,8 +45,6 @@ Contém os arquivos responsáveis por criar a infraestrutura na AWS. Em geral, e
 - Variáveis e outputs
 - Scripts de inicialização (user data) para instalar Docker e subir o Vaultwarden
 
-> Os arquivos Terraform foram criados manualmente, não derivados de frameworks ou módulos oficiais.
-
 ---
 
 ### 📁 Docker / Dockerfile
@@ -60,33 +61,7 @@ Workflow que:
 - Configura credenciais da AWS via Secrets
 - Executa comandos do Terraform (`init`, `plan`, `apply`)
 
-Isso permite deploy automatizado diretamente do GitHub para a AWS.
 
----
-
-## Infraestrutura Criada (Resumo)
-
-A infraestrutura provisionada é propositalmente simples:
-
-- 1 instância EC2
-- Security Group básico
-- Docker instalado na instância
-- Vaultwarden executando em container
-
-Não há:
-- Alta disponibilidade
-- Load Balancer
-- Auto Scaling
-- Banco de dados gerenciado
-- Backup automático
-
----
-
-## Custos Estimados
-
-Indicada para uso com instâncias pequenas (ex: `t3.micro`), o que resulta em:
-- Custo muito baixo
-- Ideal para subir, testar e destruir recursos
 
 -----------------------
 
