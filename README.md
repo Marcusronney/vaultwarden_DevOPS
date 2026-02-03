@@ -62,6 +62,7 @@ Workflow que:
 - Executa comandos do Terraform (`init`, `plan`, `apply`)
 
 
+O repositório está com 80% concluído. Em breve irei concluí-lo!
 
 -----------------------
 
