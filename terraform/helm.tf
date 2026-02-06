@@ -90,3 +90,24 @@ module "TRAEFIK" {
   depends_on = [module.TRAEFIK_CRDS]
 
 }
+
+module "KUBE_PROMETHEUS_STACK" {
+  source = "./_modules/helm-release"
+
+  namespace  = "monitoring"
+  repository = "https://github.com/prometheus-community/helm-charts"
+
+  app = {
+    create_namespace = true
+    name             = "kube-prometheus-stack"
+    force_update     = true
+    wait             = true
+    recreate_pods    = true
+    timeout          = var.timeout_seconds
+  }
+
+  values = [file("./_modules/helm-release/traefik-values.yaml")]
+
+  depends_on = [module.TRAEFIK_CRDS]
+
+}

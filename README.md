@@ -73,6 +73,15 @@ Execute o workflow **Terraform Deployment** para efetuar o Deploy da aplicação
 ![images/image.png](images/image%205.png)
 
 Após o workflow concluído, posso verificar o deploy na AWS CLI.
+Com o kubectl já instalado, vou me conectar ao Cluster.
+
+![images/image.png](images/cluster.png)
+
+```
+aws eks update-kubeconfig —region us-east-1 —name eks-mronney-io
+```
+
+![images/image.png](images/clusterconnect.png)
 
 Posso verificar o Cluster EKS iniciado.
 
@@ -202,7 +211,7 @@ kubectl get pods -A
 
 Primeiramente, irei verificar os serviços do ArgoCD.
 
-```jsx
+```
 kubectl get svc -n argocd
 ```
 
@@ -396,7 +405,7 @@ Verificando o Traefik, no campo EXTERNAL-IP eu tenho a URL da AWS
 kubectl -n traefik get svc traefik
 ```
 
-![images/image.png](images/image%2035.png)
+![images/image.png](images/svctraefik.png)
 
 Irei usar um Dominio Registrado para criar um DNS Cname para apontar para esse endereço da AWS
 
@@ -441,3 +450,34 @@ Todos os Pods executando com sucesso
 Certificado
 
 ![images/image.png](images/image%2043.png)
+
+
+# Monitoring - Prometheus e Grafana
+
+O Deploy do Kube-Prometheus está sendo feito através do helm charts dentro do helm.tf
+
+Helm Charts = charts/kube-prometheus-stack/README.md
+
+````
+module "KUBE_PROMETHEUS_STACK" {
+  source = "./_modules/helm-release"
+
+  namespace  = "monitoring"
+  repository = "https://github.com/prometheus-community/helm-charts"
+
+  app = {
+    create_namespace = true
+    name             = "kube-prometheus-stack"
+    force_update     = true
+    wait             = true
+    recreate_pods    = true
+    timeout          = var.timeout_seconds
+  }
+
+  values = [file("./_modules/helm-release/traefik-values.yaml")]
+
+  depends_on = [module.TRAEFIK_CRDS]
+
+}
+````
+
