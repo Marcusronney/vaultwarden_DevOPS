@@ -91,23 +91,24 @@ module "TRAEFIK" {
 
 }
 
+
 module "KUBE_PROMETHEUS_STACK" {
   source = "./_modules/helm-release"
 
   namespace  = "monitoring"
-  repository = "https://github.com/prometheus-community/helm-charts"
+  repository = "https://prometheus-community.github.io/helm-charts"
 
   app = {
     create_namespace = true
     name             = "kube-prometheus-stack"
+    chart            = "kube-prometheus-stack"
+    version          = "56.6.2" # exemplo; fixe uma versão válida pro seu cenário
     force_update     = true
     wait             = true
     recreate_pods    = true
     timeout          = var.timeout_seconds
   }
 
-  values = [file("./_modules/helm-release/traefik-values.yaml")]
-
-  depends_on = [module.TRAEFIK_CRDS]
 
 }
+
