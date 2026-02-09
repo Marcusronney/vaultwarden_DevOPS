@@ -373,7 +373,7 @@ kubectl get applications -n argocd
 
 ![images/image.png](images/image%2032.png)
 
-Note que o HELTH STATUS é Degraded, isso se deve porque o Secret TLS está aguardando a URL da Amazon apontar para o DNS “vault.ronney.tech” declarado em certificate.tf. Posteriormente irei criar um DNS apontando para a AWS, após isso o ArgoCD irá recriar o Certificate.
+Note que o *HELTH STATUS* é **Degraded**, isso se deve porque o Secret TLS está aguardando a URL da Amazon apontar para o DNS “vault.ronney.tech” declarado em certificate.tf. Posteriormente irei criar um DNS apontando para a AWS, após isso o ArgoCD irá recriar o Certificate.
 
 kubernetes/certificate.yaml
 
@@ -383,7 +383,7 @@ commonName: vault.ronney.tech
     - vault.ronney.tech
 ```
 
-Verificando Certificado, note que o Status está como False
+Verificando Certificado, note que o Status está como **False**.
 
 ```jsx
 kubectl -n vaultwarden describe certificate vaultwarden-cert2
@@ -391,7 +391,7 @@ kubectl -n vaultwarden describe certificate vaultwarden-cert2
 
 ![images/image.png](images/image%2033.png)
 
-Verificando Pod do Traefik
+Verificando Pod do **Traefik**.
 
 ```jsx
 kubectl -n traefik get pods
@@ -399,7 +399,7 @@ kubectl -n traefik get pods
 
 ![images/image.png](images/image%2034.png)
 
-Verificando o Traefik, no campo EXTERNAL-IP eu tenho a URL da AWS
+Verificando o Traefik, no campo **EXTERNAL-IP** eu tenho a URL da AWS
 
 ```jsx
 kubectl -n traefik get svc traefik
@@ -411,7 +411,7 @@ Irei usar um Dominio Registrado para criar um DNS Cname para apontar para esse e
 
 ![images/image.png](images/image%2036.png)
 
-Verificando Secret
+Verificando **Secret**
 
 ```jsx
 kubectl -n vaultwarden get secret letsencrypt2
@@ -450,6 +450,125 @@ Todos os Pods executando com sucesso
 Certificado
 
 ![images/image.png](images/image%2043.png)
+
+
+### Armazenamento - PVE, PV e StorageClass
+
+O Armazenamento da aplicação está seguindo fluxo StorageClass → PVC → PV → VolumeAttachment → CSI driver.
+
+No Kubernetes, o **StorageClass** define **como** o disco será criado (tipo, provisionador e políticas) o **PVC** é o pedido feito pela aplicação por um armazenamento persistente; o **PV** é o disco efetivamente provisionado para atender esse pedido; e ele fica **anexado a uma instância EC2** porque, no EKS usando **EBS**, os volumes são discos físicos da AWS que precisam ser conectados ao node EC2 onde o pod está executando para que a aplicação possa ler e gravar dados de forma persistente.
+
+```jsx
+kubectl get storageclass
+```
+
+![images/image.png](images/image%2056.png)
+
+O StorageClass lista as classes de armazenamento disponíveis no cluster, ele define como os volumes serão criados. (Disco, Política, etc)
+
+![images/image.png](images/image%2057.png)
+
+```jsx
+kubectl get pvc -A
+```
+
+Lista os **PersistentVolumeClaims (PVCs) do vaultwarden**
+
+```jsx
+ kubectl get pv
+```
+
+![images/image.png](images/image%2058.png)
+
+Lista os **PersistentVolumes (PVs)**, que são os volumes reais provisionados no cluster.
+
+```jsx
+kubectl get csidriver
+```
+
+Drivers do CSI instalados no cluster. O cluster está preparado para Discos EBS e EFS.
+
+![images/image.png](images/image%2059.png)
+Verificando os plugins EBS nos Nodes.
+
+```jsx
+kubectl get daemonset -n kube-system | grep -i ebs
+```
+
+![images/image.png](images/image%2060.png)
+
+Verificando os Pods que possuem Driver EBS CSI rodando. 
+
+```jsx
+kubectl get pods -n kube-system | grep -i ebs
+```
+
+![images/image.png](images/image%2061.png)
+
+Listando os Drivers CSI instalados
+
+```jsx
+kubectl get csidriver
+```
+
+![images/image.png](images/image%2062.png)
+
+Listando o EC2 onde o volume está anexado.
+
+```jsx
+kubectl get volumeattachment
+```
+
+![images/image.png](images/image%2063.png)
+
+```jsx
+	kubectl describe volumeattachment csi-b7a140040c5b54c75bc7af6cde63e43999add3cda038425f355ee89c360e2794
+```
+
+```jsx
+Name:         csi-b7a140040c5b54c75bc7af6cde63e43999add3cda038425f355ee89c360e2794
+Namespace:
+Labels:       <none>
+Annotations:  csi.alpha.kubernetes.io/node-id: i-032463daf25e3db40
+API Version:  storage.k8s.io/v1
+Kind:         VolumeAttachment
+Metadata:
+  Creation Timestamp:  2026-02-06T13:49:17Z
+  Finalizers:
+    external-attacher/ebs-csi-aws-com
+  Resource Version:  10231
+  UID:               a9e7a5e8-1e4b-4323-9f7d-9c50a5f2d0c2
+Spec:
+  Attacher:   ebs.csi.aws.com
+  Node Name:  ip-192-168-25-145.ec2.internal
+  Source:
+    Persistent Volume Name:  pvc-83a9d126-6dd4-4a1b-9455-5627f364697f
+Status:
+  Attached:  true
+  Attachment Metadata:
+    Device Path:  /dev/xvdaa
+Events:           <none>
+```
+
+![images/image.png](images/image%2064.png)
+
+Detalhes do PV.
+
+```jsx
+kubectl get pv -o wide
+```
+
+![images/image.png](images/image%2065.png)
+```jsx
+kubectl get pvc -A -o wide
+```
+
+![images/image.png](images/image%2066.png)
+```jsx
+kubectl get pvc -n vaultwarden
+```
+
+![images/image.png](images/image%2067.png)
 
 
 # Monitoring - Prometheus e Grafana
